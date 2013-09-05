@@ -4,7 +4,6 @@ import android.content.Context;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import net.virtalab.android.commons.CommonsApp;
 
 /**
  * Class provides static utils what help to define status of different services at Android device
@@ -16,11 +15,26 @@ public class DeviceStatusUtils {
      *
      * @return true if mobile or wifi network is connected, false - otherwise
      */
-    public static boolean isInternetEnabled(){
+    public static boolean isInternetEnabled(Context ctx){
+        if(ctx==null){
+            return false;
+        }
         boolean haveWifiConnection = false;
         boolean haveMobileConnection = false;
 
-        ConnectivityManager cm = (ConnectivityManager) CommonsApp.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager cm = null;
+        try{
+            Object obj = ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
+            cm = (ConnectivityManager) obj;
+        }catch (NullPointerException npe){
+            DebugUtils.showDialogWithExceptions("isInternetEnabled",npe.getMessage(),ctx);
+        }catch (ClassCastException cce){
+            DebugUtils.showDialogWithExceptions("isInternetEnabled",cce.getMessage(),ctx);
+        }
+
+        if(cm==null){
+            return false;
+        }
 
         NetworkInfo[] netInfo = cm.getAllNetworkInfo();
 
@@ -42,10 +56,11 @@ public class DeviceStatusUtils {
     /**
      * Defines if GPS is available at device
      *
+     * @param ctx Application Context
      * @return true if GPS is present and available, false - otherwise
      */
-    public static boolean isGPSEnabled(){
-        LocationManager lm = (LocationManager) CommonsApp.getContext().getSystemService(Context.LOCATION_SERVICE);
+    public static boolean isGPSEnabled(Context ctx){
+        LocationManager lm = (LocationManager) ctx.getSystemService(Context.LOCATION_SERVICE);
         return lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
 }

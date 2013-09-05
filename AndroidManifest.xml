@@ -6,7 +6,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
-    <application android:label="@string/app_name"
-                 android:name="net.virtalab.android.commons.CommonsApp">
+    <application android:label="@string/app_name">
     </application>
 </manifest>
